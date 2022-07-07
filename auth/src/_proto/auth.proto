@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package auth;
+
+service AuthService {
+  rpc LocalLogin (LocalLoginData) returns (JWTToken){}
+}
+
+message LocalLoginData {
+  string id = 1;
+  string ps = 2;
+}
+
+message JWTToken {
+  string access_token = 1;
+  string refresh_token = 2;
+}
