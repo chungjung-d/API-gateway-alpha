@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+
 export interface LocalLoginData {
   id : string
   ps : string
@@ -9,5 +11,5 @@ export interface JWTToken {
 }
 
 export interface AuthService {
-  LocalLogin(request : LocalLoginData) : Promise<JWTToken>
+  LocalLogin(data : LocalLoginData) : Observable<JWTToken>
 }

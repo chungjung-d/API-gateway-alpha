@@ -2,7 +2,7 @@ import { Controller, Get, OnModuleInit } from '@nestjs/common';
 import { grpcClientAuth } from '../../config/client/auth';
 import { Client, ClientGrpc } from '@nestjs/microservices';
 import { AuthService, JWTToken } from '../../type/interface/auth';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Controller('/public/auth')
 export class AuthController implements OnModuleInit{
@@ -18,7 +18,9 @@ export class AuthController implements OnModuleInit{
 
   @Get('login/local')
   async localLogin(){
-    const result =  await this.authService.LocalLogin({id:"231321",ps:"fsdfsds"})
+    const result =  await this.authService.LocalLogin({id:"231321",ps:"fsdfsds"}).pipe(
+      map((obj:JWTToken) =>{return obj}))
+    await console.log(typeof (result))
     await console.log(result)
   }
 

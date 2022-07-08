@@ -8,7 +8,7 @@ export class LoginController {
 
   @GrpcMethod('AuthService', 'LocalLogin')
   async localLogin(localLoginData: LocalLoginData): Promise<JWTToken> {
-    await console.log("EWRWERWREW")
+    await console.log(localLoginData)
     const result : JWTToken = {
       access_token : "1232132321321",
       refresh_token : "fdsafwfewfdsafewa"
