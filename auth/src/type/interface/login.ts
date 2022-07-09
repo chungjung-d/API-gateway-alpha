@@ -4,6 +4,10 @@ export interface LocalLoginData {
 }
 
 export interface JWTToken {
-  access_token : string
-  refresh_token : string
+  accessToken :string
+  refreshToken : string
+}
+
+export interface AuthService {
+  LocalLogin(request : LocalLoginData) : Promise<JWTToken>
 }

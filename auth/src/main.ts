@@ -10,6 +10,7 @@ async function bootstrap() {
       url: '127.0.0.1:3100',
       package: 'auth',
       protoPath: join(__dirname, '/proto/auth.proto'),
+      loader: { keepCase: true },
     },
   });
   await app.listen()

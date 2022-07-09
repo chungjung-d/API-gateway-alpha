@@ -6,10 +6,10 @@ export interface LocalLoginData {
 }
 
 export interface JWTToken {
-  access_token : string
-  refresh_token : string
+  accessToken :string
+  refreshToken : string
 }
 
 export interface AuthService {
-  LocalLogin(data : LocalLoginData) : Observable<JWTToken>
+  LocalLogin(request : LocalLoginData) : Observable<JWTToken>
 }

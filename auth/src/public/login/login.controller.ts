@@ -5,17 +5,13 @@ import { JWTToken, LocalLoginData } from '../../type/interface/login';
 @Controller()
 export class LoginController {
 
-
   @GrpcMethod('AuthService', 'LocalLogin')
-  async localLogin(localLoginData: LocalLoginData): Promise<JWTToken> {
-    await console.log(localLoginData)
-    const result : JWTToken = {
-      access_token : "1232132321321",
-      refresh_token : "fdsafwfewfdsafewa"
+  async localLogin(request : LocalLoginData ) : Promise<JWTToken>{
+    await console.log(request)
+    await console.log("123312312")
+    return  {
+      accessToken : "12132",
+      refreshToken : "ddewdewd"
     }
-
-    return result
   }
-
-
 }
