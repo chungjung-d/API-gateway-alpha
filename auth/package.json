@@ -27,10 +27,13 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/microservices": "^8.4.7",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/typeorm": "^9.0.0",
     "grpc": "^1.24.11",
+    "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "typeorm": "^0.3.7"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",

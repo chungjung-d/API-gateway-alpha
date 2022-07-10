@@ -1,9 +1,9 @@
-import { Controller, Inject } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { JWTToken, LocalLoginData } from '../../type/interface/login';
+import { JWTToken, LocalLoginData } from '../type/interface/login';
 
 @Controller()
-export class LoginController {
+export class PublicController {
 
   @GrpcMethod('AuthService', 'LocalLogin')
   async localLogin(request : LocalLoginData ) : Promise<JWTToken>{
@@ -11,7 +11,8 @@ export class LoginController {
     await console.log("123312312")
     return  {
       accessToken : "12132",
-      refreshToken : "ddewdewd"
+      refreshToken : "ddew_dewd"
     }
   }
+
 }
