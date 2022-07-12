@@ -9,7 +9,7 @@ async function bootstrap() {
     options: {
       url: '127.0.0.1:3100',
       package: 'auth',
-      protoPath: join(__dirname, '/proto/auth.proto'),
+      protoPath: join(__dirname, '/interface/proto/auth.proto'),
       loader: { keepCase: true },
     },
   });
