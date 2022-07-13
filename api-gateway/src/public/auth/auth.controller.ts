@@ -18,7 +18,7 @@ export class AuthController implements OnModuleInit{
 
   @Get('login/local')
   async localLogin(): Promise<JWTToken> {
-    return await this.authService.LocalLogin({id:"231321",ps:"fsdfsds"}).toPromise()
+    return await this.authService.LocalLogin({id:"231321",password:"fsdfsds"}).toPromise()
   }
 
 }

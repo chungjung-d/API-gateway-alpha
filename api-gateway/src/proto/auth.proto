@@ -8,7 +8,7 @@ service AuthService {
 
 message LocalLoginData {
   string id = 1;
-  string ps = 2;
+  string password = 2;
 }
 
 message JWTToken {

@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 
 export interface LocalLoginData {
   id : string
-  ps : string
+  password : string
 }
 
 export interface JWTToken {
