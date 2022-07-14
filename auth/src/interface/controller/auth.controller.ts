@@ -6,7 +6,7 @@ import { LocalLoginDTO } from '../../domain/DTO/request';
 
 @Controller()
 export class AuthController {
-  @GrpcMethod('AuthService', 'LocalLogin')
+  @GrpcMethod('AuthGrpcService', 'LocalLogin')
   async localLogin(request : LocalLoginDTO ) : Promise<JWTTokenDTO>{
     await console.log(request)
     await console.log("123312312")
