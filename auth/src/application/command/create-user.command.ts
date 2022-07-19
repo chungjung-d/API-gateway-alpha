@@ -6,5 +6,7 @@ export interface CreateUserCommandInterface extends Pick<AuthEntityType,
 
 
 export class CreateUserCommand implements ICommand{
-  constructor( CreateUserCommandDTO : CreateUserCommandInterface) {}
+
+  constructor( readonly createUserCommandDTO : CreateUserCommandInterface) {}
+
 }

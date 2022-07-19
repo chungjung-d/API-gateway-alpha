@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from '../../interface/controller/auth.controller';
 import { CqrsModule } from '@nestjs/cqrs';
-import { CreateUserCommand } from '../../application/command/create-user.command';
+import { CreateUserHandler } from '../../application/handler/create-user.handler';
 
-const application = [CreateUserCommand]
+const application = [CreateUserHandler]
 
 @Module({
   imports: [CqrsModule],

@@ -16,9 +16,9 @@ export class AuthController {
   @GrpcMethod('AuthService', 'LocalRegister')
   async localRegister(request: LocalRegisterDTO) : Promise<GrpcStatusDTO>{
 
-    const CreateUserCommandDTO = {userEmailId : request.userEmailId , userPassword : request.userPassword}
+    const createUserCommandDTO = {userEmailId : request.userEmailId , userPassword : request.userPassword}
 
-    const command = new CreateUserCommand(CreateUserCommandDTO)
+    const command = await new CreateUserCommand(createUserCommandDTO);
 
     await this.commandBus.execute(command)
 

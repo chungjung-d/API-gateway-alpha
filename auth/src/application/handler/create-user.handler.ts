@@ -7,7 +7,8 @@ import { Injectable } from '@nestjs/common';
 export class CreateUserHandler implements ICommandHandler<CreateUserCommand,void> {
   constructor() {}
 
-  async execute(command : CreateUserCommand) {
-    await console.log(command);
+  async execute(command : CreateUserCommand) :Promise<void> {
+    await console.log(command.createUserCommandDTO)
+
   }
 }
