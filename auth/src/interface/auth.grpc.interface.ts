@@ -1,7 +1,7 @@
 import { GrpcStatusDTO, JWTTokenDTO, LocalLoginDTO, LocalRegisterDTO } from './DTO/auth.dto';
 
 
-export interface AuthGrpcService {
+export interface AuthGrpcInterface {
   LocalLogin(request : LocalLoginDTO) : Promise<JWTTokenDTO>
   LocalRegister(request: LocalRegisterDTO) : Promise<GrpcStatusDTO>
 }

@@ -13,7 +13,7 @@ export class AuthController {
     private commandBus: CommandBus,
   ) { }
 
-  @GrpcMethod('AuthGrpcService', 'LocalRegister')
+  @GrpcMethod('AuthService', 'LocalRegister')
   async localRegister(request: LocalRegisterDTO) : Promise<GrpcStatusDTO>{
 
     const CreateUserCommandDTO = {userEmailId : request.userEmailId , userPassword : request.userPassword}
@@ -28,7 +28,7 @@ export class AuthController {
   }
 
 
-  @GrpcMethod('AuthGrpcService', 'LocalLogin')
+  @GrpcMethod('AuthService', 'LocalLogin')
   async localLogin(request : LocalLoginDTO ) : Promise<JWTTokenDTO>{
     await console.log(request)
     await console.log("123312312")

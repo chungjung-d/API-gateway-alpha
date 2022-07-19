@@ -3,6 +3,9 @@ import { AuthModule } from './domain/modules/auth.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { ConfigModule } from '@nestjs/config';
 
+
+
+
 @Module({
   imports: [
     ConfigModule.forRoot({
