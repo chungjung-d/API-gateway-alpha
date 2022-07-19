@@ -1,6 +1,6 @@
-import { AuthEntityType } from '../type/entity-type/auth.entity-type';
+import { AuthEntityType } from '../../domain/type/entity-type/auth.entity-type';
 import { Column, Entity, PrimaryColumn } from 'typeorm';
-import { stringLength } from '../utils/data.format';
+import { stringLength } from '../../domain/utils/data.format';
 
 @Entity('auth_tb')
 export class Auth implements AuthEntityType {

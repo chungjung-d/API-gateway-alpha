@@ -1,4 +1,4 @@
-import { GrpcStatusDTO, JWTTokenDTO, LocalLoginDTO, LocalRegisterDTO } from '../domain/DTO/auth.dto';
+import { GrpcStatusDTO, JWTTokenDTO, LocalLoginDTO, LocalRegisterDTO } from './DTO/auth.dto';
 
 
 export interface AuthGrpcService {

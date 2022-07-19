@@ -1,15 +1,26 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { GrpcStatusDTO, JWTTokenDTO, LocalLoginDTO, LocalRegisterDTO } from '../../domain/DTO/auth.dto';
+import { GrpcStatusDTO, JWTTokenDTO, LocalLoginDTO, LocalRegisterDTO } from '../DTO/auth.dto';
 import { grpcStatus } from '../../domain/type/message-type/response.message-type';
+import { CreateUserCommand } from '../../application/command/create-user.command';
+import { CommandBus } from '@nestjs/cqrs';
 
 
 @Controller()
 export class AuthController {
 
+  constructor(
+    private commandBus: CommandBus,
+  ) { }
+
   @GrpcMethod('AuthGrpcService', 'LocalRegister')
   async localRegister(request: LocalRegisterDTO) : Promise<GrpcStatusDTO>{
 
+    const CreateUserCommandDTO = {userEmailId : request.userEmailId , userPassword : request.userPassword}
+
+    const command = new CreateUserCommand(CreateUserCommandDTO)
+
+    await this.commandBus.execute(command)
 
     return {
       grpcStatus : grpcStatus.OK

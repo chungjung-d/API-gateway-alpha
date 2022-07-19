@@ -4,8 +4,14 @@ package auth;
 
 service AuthService {
   rpc LocalLogin (LocalLoginData) returns (JWTToken){}
+  rpc LocalRegister(LocalRegisterData) returns (GrpcStatus){}
 }
 
+
+message LocalRegisterData {
+  string userEmailId = 1;
+  string userPassword = 2;
+}
 
 message LocalLoginData {
   string userEmailId = 1;
@@ -21,3 +27,4 @@ message JWTToken {
 message GrpcStatus {
   int32 grpcStatus = 1;
 }
+
