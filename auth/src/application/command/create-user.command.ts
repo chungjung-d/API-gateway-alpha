@@ -1,7 +1,7 @@
 import { ICommand } from '@nestjs/cqrs';
-import { AuthEntityType } from '../../domain/type/entity-type/auth.entity-type';
+import { UserEntityType } from '../../domain/type/entity-type/user.entity-type';
 
-export interface CreateUserCommandInterface extends Pick<AuthEntityType,
+export interface CreateUserCommandInterface extends Pick<UserEntityType,
   'userEmailId' | 'userPassword'> {}
 
 
