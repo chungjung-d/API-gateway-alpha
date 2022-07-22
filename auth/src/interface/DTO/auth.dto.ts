@@ -1,7 +1,6 @@
 import { IsEnum, IsNumber, IsString } from 'class-validator';
-import { JWTTokenDataType, LocalLoginDataType } from '../type/message-type/auth.message-type';
-import { grpcStatus, GrpcStatusData, GrpcStatusType } from '../type/message-type/response.message-type';
-import exp from 'constants';
+import { JWTTokenDataType, LocalLoginDataType } from '../../domain/type/message-type/auth.message-type';
+import { grpcStatus, GrpcStatusData, GrpcStatusType } from '../../domain/type/message-type/response.message-type';
 
 
 export class LocalLoginDTO implements LocalLoginDataType{
