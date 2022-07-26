@@ -7,9 +7,8 @@ import { User } from '../../infrastructure/entity/user.entity';
 export interface UserSaveType extends Pick<UserEntityType, 'userPassword'|'userEmailId'>{}
 
 export interface UserRepositoryInterface {
-  createLocalUser: (userSaveDTO : UserSaveType) => Promise<void>
+  createLocalUser: (new_user : UserClass) => Promise<void>
   findByUUID : (userUUID : string) => Promise<UserClass | null>
-  findById : (userEmailId: string) => Promise<User>
+  findById : (userEmailId: string) => Promise<UserClass>
   findAll : () => Promise<UserClass[]>;
-
 }

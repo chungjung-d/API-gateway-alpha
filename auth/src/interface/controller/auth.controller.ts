@@ -4,6 +4,8 @@ import { GrpcStatusDTO, JWTTokenDTO, LocalLoginDTO, LocalRegisterDTO } from '../
 import { grpcStatus } from '../../domain/type/message-type/response.message-type';
 import { createLocalUserCommand } from '../../application/command/create-local-user.command';
 import { CommandBus } from '@nestjs/cqrs';
+import { loginLocalUserCommand } from '../../application/command/login-local-user.command';
+import { JWTTokenDataType } from '../../domain/type/message-type/auth.message-type';
 
 
 @Controller()
@@ -17,7 +19,7 @@ export class AuthController {
   async localRegister(request: LocalRegisterDTO) : Promise<GrpcStatusDTO>{
 
     const createLocalUserCommandDTO = {userEmailId : request.userEmailId , userPassword : request.userPassword}
-    const command = await new createLocalUserCommand(createLocalUserCommandDTO);
+    const command : createLocalUserCommand = await new createLocalUserCommand(createLocalUserCommandDTO);
     await this.commandBus.execute(command)
 
     return {
@@ -28,12 +30,13 @@ export class AuthController {
 
   @GrpcMethod('AuthService', 'LocalLogin')
   async localLogin(request : LocalLoginDTO ) : Promise<JWTTokenDTO>{
-    await console.log(request)
-    await console.log("123312312")
+
+    const loginLocalUserCommandDTO = {userEmailId : request.userEmailId , userPassword : request.userPassword}
+    const command : loginLocalUserCommand = await new loginLocalUserCommand(loginLocalUserCommandDTO);
+    const jwtToken : JWTTokenDataType=  await this.commandBus.execute(command);
     return  {
+      ...jwtToken,
       grpcStatus : grpcStatus.OK,
-      accessToken : "12132",
-      refreshToken : "ddew_dewd"
     }
   }
 }

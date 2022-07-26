@@ -18,12 +18,12 @@ export class AuthController implements OnModuleInit{
 
   @Get('login/local')
   async localLogin(): Promise<JWTToken> {
-    return await this.authService.LocalLogin({userEmailId:"231321",userPassword:"fsdfsds"}).toPromise()
+    return await this.authService.LocalLogin({userEmailId:"dewdewdwedewdwdew",userPassword:"dewdedewdew"}).toPromise()
   }
 
   @Get('register/local')
   async localRegister(): Promise<GrpcStatusData> {
-    return await this.authService.LocalRegister({userEmailId:"231321",userPassword:"fsdfsds"}).toPromise()
+    return await this.authService.LocalRegister({userEmailId:"dewdewdwedewdwdew",userPassword:"dewdedewdew"}).toPromise()
   }
 
 }

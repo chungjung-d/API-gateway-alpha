@@ -1,7 +1,8 @@
 import { UserEntityType } from '../type/entity-type/user.entity-type';
 import { AggregateRoot, EventPublisher } from '@nestjs/cqrs';
-import { Inject } from '@nestjs/common';
-import { User } from '../../infrastructure/entity/user.entity';
+import { Inject, Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcryptjs';
+import * as jwt from 'jsonwebtoken';
 
 
 export type UserRequireProperties = Pick<UserEntityType,'userEmailId'|'userPassword'>
@@ -9,9 +10,16 @@ export type UserOptionalProperties = Partial<Omit<UserEntityType,'userEmailId'|'
 
 export type UserProperties = Required<UserRequireProperties> & Required<UserOptionalProperties>
 
+export interface GenerateJWTTokenType {
+  readonly secret : string;
+  readonly expireTime : string;
+}
+
 export interface UserClassInterface {
   properties: () => UserProperties;
   comparePassword : (password : string) => Promise<boolean>;
+  createAccessJWTToken: ( generateJWTTokenDTO : GenerateJWTTokenType) => Promise<string>;
+  createRefreshJWTToken: (generateJWTTokenDTO : GenerateJWTTokenType) => Promise<string>;
 }
 
 export class UserClass extends AggregateRoot implements UserClassInterface{
@@ -21,16 +29,11 @@ export class UserClass extends AggregateRoot implements UserClassInterface{
   readonly userEmailId: string;
   readonly userJWTRefreshToken: string | null;
   readonly userPassword: string;
-  readonly userUUID: string | null;
+  readonly userUUID: string | null = null;
 
   constructor(properties: Required<UserRequireProperties> & UserOptionalProperties) {
     super();
     Object.assign(this,properties)
-  }
-
-  async comparePassword(password:string) : Promise<boolean> {
-
-    return true;
   }
 
   properties(): UserProperties {
@@ -43,23 +46,49 @@ export class UserClass extends AggregateRoot implements UserClassInterface{
       userJWTRefreshToken: this.userJWTRefreshToken,
     }
   }
+
+  async comparePassword(password: string) : Promise<boolean> {
+    return bcrypt.compareSync(password,this.userPassword);
+  }
+
+  async createAccessJWTToken(generateJWTTokenDTO : GenerateJWTTokenType): Promise<string> {
+
+    const {secret ,expireTime} = generateJWTTokenDTO
+    return jwt.sign(
+      { sub : this.userEmailId },
+      secret, {
+        algorithm : 'HS256',
+        expiresIn : expireTime
+      })
+  }
+
+  async createRefreshJWTToken(generateJWTTokenDTO : GenerateJWTTokenType): Promise<string> {
+
+    const {secret ,expireTime} = generateJWTTokenDTO
+    return jwt.sign(
+      { sub : this.userEmailId },
+      secret, {
+        algorithm : 'HS256',
+        expiresIn : expireTime
+      })
+  }
 }
 
-
 export class UserFactory {
+
   constructor(
-    @Inject(EventPublisher) private readonly eventEventPublisher : EventPublisher,
-  ) {}
+    @Inject(EventPublisher) private readonly eventPublisher : EventPublisher,
+  ) { }
 
   create(userEmailId: string, userPassword: string): UserClass {
-    return this.eventEventPublisher.mergeObjectContext(
+    return this.eventPublisher.mergeObjectContext(
       new UserClass({ userEmailId: userEmailId, userPassword: userPassword }),
     );
   }
 
-  reconstitute(properties: UserProperties): UserClass {
-    return this.eventEventPublisher.mergeObjectContext(
-      new UserClass(properties),
+  reconstitute(userProprerties: UserProperties): UserClass {
+    return this.eventPublisher.mergeObjectContext(
+      new UserClass(userProprerties)
     );
   }
 

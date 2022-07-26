@@ -1,32 +1,23 @@
-import { UserRepositoryInterface, UserSaveType } from '../../domain/interface/repostory.interface';
-import { UserEntityType } from '../../domain/type/entity-type/user.entity-type';
+import { Inject } from '@nestjs/common';
+import { UserClass, UserFactory } from '../../domain/interface/user.class';
+import { EntityManager, Repository } from 'typeorm';
+import { UserRepositoryInterface } from '../../domain/interface/repostory.interface';
 import { CustomRepository } from './typeorm-ex.decorator';
 import { User } from '../entity/user.entity';
-import { DataSource, EntityManager, EntityMetadata, Repository } from 'typeorm';
-import { UserClass, UserFactory } from '../../domain/interface/user.class';
-import { raw } from 'express';
-import { Inject } from '@nestjs/common';
-import { getDataSourceToken } from '@nestjs/typeorm';
-import { CustomTypeOrmModule } from './typeorm-ex.module';
-
 
 @CustomRepository(User)
 export class UserRepository extends Repository<User> implements UserRepositoryInterface{
 
-  constructor(@Inject(UserFactory) private readonly userFactory:UserFactory,
+  constructor( private readonly userFactory : UserFactory,
               entityManager : EntityManager,
   ) {
     const constructorValue = entityManager.getRepository(User)
     super(constructorValue.target,constructorValue.manager,constructorValue.queryRunner);
   }
 
-  async createLocalUser(userSaveDTO: UserSaveType): Promise<void> {
-    const new_user = new User()
-    const {userPassword , userEmailId} = userSaveDTO;
-    new_user.userEmailId = userEmailId;
-    new_user.userPassword = userPassword;
-
-    await this.save(new_user);
+  async createLocalUser(new_user : UserClass): Promise<void> {
+    const user_entity = this.classToEntity(new_user);
+    await this.save(user_entity);
   }
 
   findAll(): Promise<UserClass[]> {
@@ -34,8 +25,11 @@ export class UserRepository extends Repository<User> implements UserRepositoryIn
   }
 
   async findById(userEmailId: string): Promise<UserClass> {
-
-    return Promise.resolve(undefined);
+    const user = await this.findOne({where:{
+      userEmailId : userEmailId
+      }})
+    const user_class = await this.entityToClass(user);
+    return user_class;
   }
 
   findByUUID(userUUID: string): Promise<UserClass | null> {
@@ -50,9 +44,8 @@ export class UserRepository extends Repository<User> implements UserRepositoryIn
   }
 
   private entityToClass(entity: User): UserClass {
-    return this.userFactory.reconstitute({
-      ...entity
-    })
+
+    return new UserClass(entity);
   }
 
 }

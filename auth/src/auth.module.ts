@@ -4,16 +4,25 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { createLocalUserHandler } from './application/handler/create-local-user.handler';
 import { CustomTypeOrmModule } from './infrastructure/repository/typeorm-ex.module';
 import { UserRepository } from './infrastructure/repository/user.repository';
+import { UserFactory } from './domain/interface/user.class';
+import { loginLocalUserHandler } from './application/handler/login-local-user.command';
+import { PassportModule } from '@nestjs/passport';
+import { ConfigModule } from '@nestjs/config';
 
-const application = [createLocalUserHandler]
+const application = [createLocalUserHandler,loginLocalUserHandler]
+const factory = [UserFactory]
+const repository = [UserRepository]
 
 @Module({
-  imports: [CqrsModule,
+  imports: [
+    CqrsModule,
     CustomTypeOrmModule.forCustomRepository(
-      [UserRepository]
-    )
+      repository
+    ),
+    PassportModule,
+    ConfigModule,
   ],
   controllers: [AuthController],
-  providers: [...application]
+  providers: [...application, ...factory]
 })
 export class AuthModule {}

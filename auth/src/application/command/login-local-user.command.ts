@@ -6,5 +6,7 @@ export interface loginLocalUserCommandInterface extends Pick<UserEntityType,
 
 
 export class loginLocalUserCommand implements ICommand{
+
   constructor( readonly loginLocalUserCommandDTO : loginLocalUserCommandInterface) {}
+
 }
