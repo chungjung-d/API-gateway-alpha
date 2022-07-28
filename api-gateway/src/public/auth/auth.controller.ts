@@ -1,29 +1,64 @@
-import { Controller, Get, OnModuleInit } from '@nestjs/common';
-import { grpcClientAuth } from '../../config/client/auth';
+import { Body, Controller, Get, OnModuleInit, Post } from '@nestjs/common';
+import { grpcClientAuth } from '../../infrastructure/grpc/client/auth.client';
 import { Client, ClientGrpc } from '@nestjs/microservices';
-import { AuthService, GrpcStatusData, JWTToken } from '../../type/interface/auth';
+import { AuthService } from '../../infrastructure/grpc/interface/auth';
 import { map, Observable } from 'rxjs';
+import {
+  AccessJWTTokenDTO,
+  GrpcStatusDTO,
+  JWTTokenDTO,
+  ReissueAccessJWTTokenDTO,
+  UserInfoDTO,
+  VerifyAccessJWTTokenDTO,
+} from '../../infrastructure/grpc/DTO/auth/auth.dto';
 
 @Controller('/public/auth')
-export class AuthController implements OnModuleInit{
-
+export class AuthController implements OnModuleInit {
   @Client(grpcClientAuth)
   private readonly grpcClientAuth: ClientGrpc;
 
-  private authService: AuthService
+  private authService: AuthService;
 
-  onModuleInit(){
-    this.authService = this.grpcClientAuth.getService<AuthService>('AuthService')
+  onModuleInit() {
+    this.authService =
+      this.grpcClientAuth.getService<AuthService>('AuthService');
   }
 
   @Get('login/local')
-  async localLogin(): Promise<JWTToken> {
-    return await this.authService.LocalLogin({userEmailId:"dewdewdwedewdwdew",userPassword:"dewdedewdew"}).toPromise()
+  async localLogin(): Promise<JWTTokenDTO> {
+    return await this.authService
+      .LocalLogin({
+        userEmailId: 'dewdewdwedewdwdew',
+        userPassword: 'dewdedewdew',
+      })
+      .toPromise();
   }
 
   @Get('register/local')
-  async localRegister(): Promise<GrpcStatusData> {
-    return await this.authService.LocalRegister({userEmailId:"dewdewdwedewdwdew",userPassword:"dewdedewdew"}).toPromise()
+  async localRegister(): Promise<GrpcStatusDTO> {
+    return await this.authService
+      .LocalRegister({
+        userEmailId: 'dewdewdwedewdwdew',
+        userPassword: 'dewdedewdew',
+      })
+      .toPromise();
   }
 
+  @Post('jwt/verify')
+  async verifyAccessJWTToken(
+    @Body() verifyAccessJWTTokenDTO: VerifyAccessJWTTokenDTO,
+  ): Promise<UserInfoDTO> {
+    return await this.authService
+      .VerifyAccessJWTToken(verifyAccessJWTTokenDTO)
+      .toPromise();
+  }
+
+  @Post('jwt/reissue')
+  async reissueAccessJWTToken(
+    @Body() reissueAccessJWTTokenDTO: ReissueAccessJWTTokenDTO,
+  ): Promise<AccessJWTTokenDTO> {
+    return await this.authService
+      .ReissueAccessJWTToken(reissueAccessJWTTokenDTO)
+      .toPromise();
+  }
 }

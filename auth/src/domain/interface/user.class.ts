@@ -3,37 +3,55 @@ import { AggregateRoot, EventPublisher } from '@nestjs/cqrs';
 import { Inject, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
+import { UserInformationDataType } from '../type/message-type/auth.query.message-type';
 
+export type UserRequireProperties = Pick<
+  UserEntityType,
+  'userEmailId' | 'userPassword'
+>;
+export type UserOptionalProperties = Partial<
+  Omit<UserEntityType, 'userEmailId' | 'userPassword'>
+>;
 
-export type UserRequireProperties = Pick<UserEntityType,'userEmailId'|'userPassword'>
-export type UserOptionalProperties = Partial<Omit<UserEntityType,'userEmailId'|'userPassword'>>
-
-export type UserProperties = Required<UserRequireProperties> & Required<UserOptionalProperties>
+export type UserProperties = Required<UserRequireProperties> &
+  Required<UserOptionalProperties>;
 
 export interface GenerateJWTTokenType {
-  readonly secret : string;
-  readonly expireTime : string;
+  readonly secret: string;
+  readonly expireTime: string;
 }
 
 export interface UserClassInterface {
   properties: () => UserProperties;
-  comparePassword : (password : string) => Promise<boolean>;
-  createAccessJWTToken: ( generateJWTTokenDTO : GenerateJWTTokenType) => Promise<string>;
-  createRefreshJWTToken: (generateJWTTokenDTO : GenerateJWTTokenType) => Promise<string>;
+
+  comparePassword: (password: string) => Promise<boolean>;
+
+  createAccessJWTToken: (
+    generateJWTTokenDTO: GenerateJWTTokenType,
+  ) => Promise<string>;
+
+  createRefreshJWTToken: (
+    generateJWTTokenDTO: GenerateJWTTokenType,
+  ) => Promise<string>;
+
+  setRefreshJWTToken: (refreshJWTToken: string) => void;
+
+  getUserInfo: () => UserInformationDataType;
 }
 
-export class UserClass extends AggregateRoot implements UserClassInterface{
-
+export class UserClass extends AggregateRoot implements UserClassInterface {
   readonly accessLevel: number;
   readonly lastActivate: Date | null;
   readonly userEmailId: string;
-  readonly userJWTRefreshToken: string | null;
+  userJWTRefreshToken: string | null;
   readonly userPassword: string;
   readonly userUUID: string | null = null;
 
-  constructor(properties: Required<UserRequireProperties> & UserOptionalProperties) {
+  constructor(
+    properties: Required<UserRequireProperties> & UserOptionalProperties,
+  ) {
     super();
-    Object.assign(this,properties)
+    Object.assign(this, properties);
   }
 
   properties(): UserProperties {
@@ -44,41 +62,50 @@ export class UserClass extends AggregateRoot implements UserClassInterface{
       userPassword: this.userPassword,
       userUUID: this.userUUID,
       userJWTRefreshToken: this.userJWTRefreshToken,
-    }
+    };
   }
 
-  async comparePassword(password: string) : Promise<boolean> {
-    return bcrypt.compareSync(password,this.userPassword);
+  async comparePassword(password: string): Promise<boolean> {
+    return bcrypt.compareSync(password, this.userPassword);
   }
 
-  async createAccessJWTToken(generateJWTTokenDTO : GenerateJWTTokenType): Promise<string> {
-
-    const {secret ,expireTime} = generateJWTTokenDTO
-    return jwt.sign(
-      { sub : this.userEmailId },
-      secret, {
-        algorithm : 'HS256',
-        expiresIn : expireTime
-      })
+  async createAccessJWTToken(
+    generateJWTTokenDTO: GenerateJWTTokenType,
+  ): Promise<string> {
+    const { secret, expireTime } = generateJWTTokenDTO;
+    return jwt.sign({ sub: this.userEmailId }, secret, {
+      algorithm: 'HS256',
+      expiresIn: expireTime,
+    });
   }
 
-  async createRefreshJWTToken(generateJWTTokenDTO : GenerateJWTTokenType): Promise<string> {
+  async createRefreshJWTToken(
+    generateJWTTokenDTO: GenerateJWTTokenType,
+  ): Promise<string> {
+    const { secret, expireTime } = generateJWTTokenDTO;
+    return jwt.sign({ sub: this.userEmailId }, secret, {
+      algorithm: 'HS256',
+      expiresIn: expireTime,
+    });
+  }
 
-    const {secret ,expireTime} = generateJWTTokenDTO
-    return jwt.sign(
-      { sub : this.userEmailId },
-      secret, {
-        algorithm : 'HS256',
-        expiresIn : expireTime
-      })
+  setRefreshJWTToken(refreshJWTToken: string): void {
+    this.userJWTRefreshToken = refreshJWTToken;
+  }
+
+  getUserInfo(): UserInformationDataType {
+    return {
+      accessLevel: this.accessLevel,
+      userEmailId: this.userEmailId,
+      userUUID: this.userUUID,
+    };
   }
 }
 
 export class UserFactory {
-
   constructor(
-    @Inject(EventPublisher) private readonly eventPublisher : EventPublisher,
-  ) { }
+    @Inject(EventPublisher) private readonly eventPublisher: EventPublisher,
+  ) {}
 
   create(userEmailId: string, userPassword: string): UserClass {
     return this.eventPublisher.mergeObjectContext(
@@ -88,8 +115,7 @@ export class UserFactory {
 
   reconstitute(userProprerties: UserProperties): UserClass {
     return this.eventPublisher.mergeObjectContext(
-      new UserClass(userProprerties)
+      new UserClass(userProprerties),
     );
   }
-
 }

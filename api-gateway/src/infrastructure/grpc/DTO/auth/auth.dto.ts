@@ -1,14 +1,14 @@
-import { IsEmail, IsEnum, IsNumber, IsString, IsUUID } from 'class-validator';
-import {
-  JWTTokenDataType,
-  LocalLoginDataType,
-} from '../../domain/type/message-type/auth.command.message-type';
+import { UserInformationDataType } from '../../../../domain/type/auth/message-type/auth.query.message-type';
 import {
   grpcStatus,
   GrpcStatusData,
   GrpcStatusType,
-} from '../../domain/type/message-type/response.message-type';
-import { UserInformationDataType } from '../../domain/type/message-type/auth.query.message-type';
+} from '../../../../domain/type/common/response.message-type';
+import {
+  JWTTokenDataType,
+  LocalLoginDataType,
+} from '../../../../domain/type/auth/message-type/auth.command.message-type';
+import { IsEmail, IsEnum, IsNumber, IsString, IsUUID } from 'class-validator';
 
 export class LocalLoginDTO implements LocalLoginDataType {
   @IsString()

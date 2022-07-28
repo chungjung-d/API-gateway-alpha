@@ -15,9 +15,20 @@ export class UserRepository extends Repository<User> implements UserRepositoryIn
     super(constructorValue.target,constructorValue.manager,constructorValue.queryRunner);
   }
 
-  async createLocalUser(new_user : UserClass): Promise<void> {
+  async createUser(new_user : UserClass): Promise<void> {
     const user_entity = this.classToEntity(new_user);
     await this.save(user_entity);
+  }
+
+  async updateUser(user : UserClass): Promise<void> {
+    const user_entity = this.classToEntity(user);
+
+    await this.update({
+      userUUID : user_entity.userUUID,
+    },{
+      ...user_entity
+      }
+    )
   }
 
   findAll(): Promise<UserClass[]> {
