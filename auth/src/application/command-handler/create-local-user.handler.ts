@@ -7,7 +7,7 @@ import { UserFactory } from '../../domain/interface/user.class';
 
 @Injectable()
 @CommandHandler(CreateLocalUserCommand)
-export class createLocalUserHandler
+export class CreateLocalUserHandler
   implements ICommandHandler<CreateLocalUserCommand, void>
 {
   constructor(

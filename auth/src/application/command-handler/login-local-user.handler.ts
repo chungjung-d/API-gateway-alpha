@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 @CommandHandler(LoginLocalUserCommand)
-export class loginLocalUserHandler
+export class LoginLocalUserHandler
   implements ICommandHandler<LoginLocalUserCommand, JWTTokenDataType>
 {
   constructor(

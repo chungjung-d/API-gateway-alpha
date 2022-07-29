@@ -2,7 +2,6 @@ import { Body, Controller, Get, OnModuleInit, Post } from '@nestjs/common';
 import { grpcClientAuth } from '../../infrastructure/grpc/client/auth.client';
 import { Client, ClientGrpc } from '@nestjs/microservices';
 import { AuthService } from '../../infrastructure/grpc/interface/auth';
-import { map, Observable } from 'rxjs';
 import {
   AccessJWTTokenDTO,
   GrpcStatusDTO,
