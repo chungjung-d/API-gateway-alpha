@@ -45,7 +45,7 @@ export class UserClass extends AggregateRoot implements UserClassInterface {
   readonly userEmailId: string;
   userJWTRefreshToken: string | null;
   readonly userPassword: string;
-  readonly userUUID: string | null = null;
+  readonly userUUID: string | null;
 
   constructor(
     properties: Required<UserRequireProperties> & UserOptionalProperties,

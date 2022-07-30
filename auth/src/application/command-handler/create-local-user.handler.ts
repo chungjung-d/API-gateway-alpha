@@ -26,6 +26,9 @@ export class CreateLocalUserHandler
       command.createLocalUserCommandDTO.userEmailId,
       userHashPassword,
     );
+
+    console.log(new_user.properties());
+
     await this.userRepository.createUser(new_user);
   }
 }

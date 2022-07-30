@@ -1,14 +1,13 @@
 export interface UserEntityType {
+  readonly userUUID: string;
 
-  readonly userUUID : string;
+  readonly userEmailId: string;
 
-  readonly userEmailId : string;
+  readonly userPassword: string;
 
-  readonly userPassword : string;
+  readonly userJWTRefreshToken: string;
 
-  readonly userJWTRefreshToken : string;
+  readonly lastActivate: Date;
 
-  readonly lastActivate : Date;
-
-  readonly accessLevel : number;
+  readonly accessLevel: number;
 }

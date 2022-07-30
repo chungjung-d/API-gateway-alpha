@@ -1,4 +1,13 @@
-import { Body, Controller, Get, OnModuleInit, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  OnModuleInit,
+  Post,
+  Req,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { grpcClientAuth } from '../../infrastructure/grpc/client/auth.client';
 import { Client, ClientGrpc } from '@nestjs/microservices';
 import { AuthService } from '../../infrastructure/grpc/interface/auth';
@@ -10,54 +19,46 @@ import {
   UserInfoDTO,
   VerifyAccessJWTTokenDTO,
 } from '../../infrastructure/grpc/DTO/auth/auth.dto';
+import { VerifyAccessJwtInterceptor } from '../../application/interceptor/verify-access-jwt.interceptor';
+import { AuthBusiness } from '../../application/business/auth.business';
+import {
+  AccessJWTTokenHttpDTO,
+  JWTTokenHttpDTO,
+  LocalLoginHttpDTO,
+  LocalRegisterHttpDTO,
+  UserInfoHttpDTO,
+} from '../DTO/auth.http.dto';
 
-@Controller('/public/auth')
-export class AuthController implements OnModuleInit {
-  @Client(grpcClientAuth)
-  private readonly grpcClientAuth: ClientGrpc;
+@Controller('/auth')
+export class AuthController {
+  constructor(private readonly authBusiness: AuthBusiness) {}
 
-  private authService: AuthService;
-
-  onModuleInit() {
-    this.authService =
-      this.grpcClientAuth.getService<AuthService>('AuthService');
+  @Post('register/local')
+  async localRegister(
+    @Body() localRegisterHttpDTO: LocalRegisterHttpDTO,
+  ): Promise<void> {
+    await this.authBusiness.localRegister(localRegisterHttpDTO);
   }
 
-  @Get('login/local')
-  async localLogin(): Promise<JWTTokenDTO> {
-    return await this.authService
-      .LocalLogin({
-        userEmailId: 'dewdewdwedewdwdew',
-        userPassword: 'dewdedewdew',
-      })
-      .toPromise();
+  @Post('login/local')
+  async localLogin(
+    @Body() localLoginHttpDTO: LocalLoginHttpDTO,
+  ): Promise<JWTTokenHttpDTO> {
+    return await this.authBusiness.localLogin(localLoginHttpDTO);
   }
 
-  @Get('register/local')
-  async localRegister(): Promise<GrpcStatusDTO> {
-    return await this.authService
-      .LocalRegister({
-        userEmailId: 'dewdewdwedewdwdew',
-        userPassword: 'dewdedewdew',
-      })
-      .toPromise();
-  }
-
-  @Post('jwt/verify')
-  async verifyAccessJWTToken(
-    @Body() verifyAccessJWTTokenDTO: VerifyAccessJWTTokenDTO,
-  ): Promise<UserInfoDTO> {
-    return await this.authService
-      .VerifyAccessJWTToken(verifyAccessJWTTokenDTO)
-      .toPromise();
+  @UseInterceptors(VerifyAccessJwtInterceptor)
+  @Get('jwt/verify')
+  async verifyAccessJWTToken(@Req() req): Promise<UserInfoHttpDTO> {
+    return req.user;
   }
 
   @Post('jwt/reissue')
   async reissueAccessJWTToken(
     @Body() reissueAccessJWTTokenDTO: ReissueAccessJWTTokenDTO,
-  ): Promise<AccessJWTTokenDTO> {
-    return await this.authService
-      .ReissueAccessJWTToken(reissueAccessJWTTokenDTO)
-      .toPromise();
+  ): Promise<AccessJWTTokenHttpDTO> {
+    return await this.authBusiness.reissueAccessJWTToken(
+      reissueAccessJWTTokenDTO,
+    );
   }
 }
