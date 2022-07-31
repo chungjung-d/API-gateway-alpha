@@ -1,34 +1,35 @@
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { UserClass, UserFactory } from '../../domain/interface/user.class';
-import { EntityManager, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { UserRepositoryInterface } from '../../domain/interface/repostory.interface';
-import { CustomRepository } from './typeorm-ex.decorator';
 import { User } from '../entity/user.entity';
 
-@CustomRepository(User)
-export class UserRepository extends Repository<User> implements UserRepositoryInterface{
+@Injectable()
+export class UserRepository implements UserRepositoryInterface {
+  constructor(
+    private dataSource: DataSource,
+    private readonly userFactory: UserFactory,
+  ) {}
 
-  constructor( private readonly userFactory : UserFactory,
-              entityManager : EntityManager,
-  ) {
-    const constructorValue = entityManager.getRepository(User)
-    super(constructorValue.target,constructorValue.manager,constructorValue.queryRunner);
-  }
+  async createUser(new_user: UserClass): Promise<void> {
+    const userRepository = this.dataSource.getRepository(User);
 
-  async createUser(new_user : UserClass): Promise<void> {
     const user_entity = this.classToEntity(new_user);
-    await this.save(user_entity);
+    await userRepository.save(user_entity);
   }
 
-  async updateUser(user : UserClass): Promise<void> {
+  async updateUser(user: UserClass): Promise<void> {
+    const userRepository = this.dataSource.getRepository(User);
     const user_entity = this.classToEntity(user);
 
-    await this.update({
-      userUUID : user_entity.userUUID,
-    },{
-      ...user_entity
-      }
-    )
+    await userRepository.update(
+      {
+        userUUID: user_entity.userUUID,
+      },
+      {
+        ...user_entity,
+      },
+    );
   }
 
   findAll(): Promise<UserClass[]> {
@@ -36,14 +37,18 @@ export class UserRepository extends Repository<User> implements UserRepositoryIn
   }
 
   async findById(userEmailId: string): Promise<UserClass> {
-    const user = await this.findOne({where:{
-      userEmailId : userEmailId
-      }})
+    const userRepository = this.dataSource.getRepository(User);
+    const user = await userRepository.findOne({
+      where: {
+        userEmailId: userEmailId,
+      },
+    });
     const user_class = await this.entityToClass(user);
     return user_class;
   }
 
-  findByUUID(userUUID: string): Promise<UserClass | null> {
+  async findByUUID(userUUID: string): Promise<UserClass | null> {
+    const userRepository = this.dataSource.getRepository(User);
     return Promise.resolve(undefined);
   }
 
@@ -51,12 +56,10 @@ export class UserRepository extends Repository<User> implements UserRepositoryIn
     const properties = _class.properties();
     return {
       ...properties,
-    }
+    };
   }
 
   private entityToClass(entity: User): UserClass {
-
-    return new UserClass(entity);
+    return this.userFactory.reconstitute(entity);
   }
-
 }
