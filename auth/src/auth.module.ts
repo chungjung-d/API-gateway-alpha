@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AuthController } from './interface/controller/auth.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CreateLocalUserHandler } from './application/command-handler/create-local-user.handler';
-import { CustomTypeOrmModule } from './infrastructure/repository/typeorm-ex.module';
 import { UserRepository } from './infrastructure/repository/user.repository';
 import { UserFactory } from './domain/interface/user.class';
 import { ConfigModule } from '@nestjs/config';
@@ -20,12 +19,8 @@ const factory = [UserFactory];
 const repository = [UserRepository];
 
 @Module({
-  imports: [
-    CqrsModule,
-    CustomTypeOrmModule.forCustomRepository(repository),
-    ConfigModule,
-  ],
+  imports: [CqrsModule, ConfigModule],
   controllers: [AuthController],
-  providers: [...application, ...factory],
+  providers: [...application, ...factory, ...repository],
 })
 export class AuthModule {}

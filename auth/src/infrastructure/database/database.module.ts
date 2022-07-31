@@ -4,11 +4,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 
 @Module({
-  imports: [TypeOrmModule.forRootAsync({
-    imports: [ConfigModule],
-    inject: [ConfigService],
-    useFactory: (configService: ConfigService) => {
-      return {
+  imports: [
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get('POSTGRES_DATABASE_HOST'),
         port: configService.get('POSTGRES_DATABASE_PORT'),
@@ -17,10 +17,9 @@ import { join } from 'path';
         database: configService.get('POSTGRES_DATABASE_NAME'),
         entities: [join(__dirname, '../../infrastructure/entity/*.entity.js')],
         synchronize: true,
-      };
-    },
-  }),
-  ]
+        autoLoadEntities: true,
+      }),
+    }),
+  ],
 })
-
 export class DatabaseModule {}
