@@ -27,8 +27,6 @@ export class CreateLocalUserHandler
       userHashPassword,
     );
 
-    console.log(new_user.properties());
-
     await this.userRepository.createUser(new_user);
   }
 }

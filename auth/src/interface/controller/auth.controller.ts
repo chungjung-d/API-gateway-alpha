@@ -17,7 +17,7 @@ import { LoginLocalUserCommand } from '../../application/command/login-local-use
 import { JWTTokenDataType } from '../../domain/type/message-type/auth.command.message-type';
 import { AuthGrpcInterface } from '../../domain/interface/auth.grpc.controller.interface';
 import { VerifyAccessJWTTokenQuery } from '../../application/query/verify-access-jwt.query';
-import { ReissueAccessJwtCommand } from '../../application/command/reissue-access-jwt.command';
+import { ReissueAccessJwtQuery } from '../../application/query/reissue-access-jwt.query';
 
 @Controller()
 export class AuthController implements AuthGrpcInterface {
@@ -80,14 +80,12 @@ export class AuthController implements AuthGrpcInterface {
   async reissueAccessJWTToken(
     request: ReissueAccessJWTTokenDTO,
   ): Promise<AccessJWTTokenDTO> {
-    const reissueAccessJwtCommandDTO = { refreshToken: request.refreshToken };
+    const reissueAccessJwtQueryDTO = { refreshToken: request.refreshToken };
 
-    const reissueAccessJwtCommand: ReissueAccessJwtCommand =
-      new ReissueAccessJwtCommand(reissueAccessJwtCommandDTO);
+    const reissueAccessJwtQuery: ReissueAccessJwtQuery =
+      new ReissueAccessJwtQuery(reissueAccessJwtQueryDTO);
 
-    const accessJWTToken = await this.commandBus.execute(
-      reissueAccessJwtCommand,
-    );
+    const accessJWTToken = await this.queryBus.execute(reissueAccessJwtQuery);
 
     return { ...accessJWTToken, grpcStatus: grpcStatus.OK };
   }

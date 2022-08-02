@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { JWTTokenDataType } from '../../domain/type/message-type/auth.command.message-type';
+import { ICommandHandler, QueryHandler } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
 import { UserRepository } from '../../infrastructure/repository/user.repository';
-import {
-  ReissueAccessJwtCommand,
-  ReissueAccessJwtCommandReturn,
-} from '../command/reissue-access-jwt.command';
+
 import * as jwt from 'jsonwebtoken';
+import {
+  ReissueAccessJwtQuery,
+  ReissueAccessJwtQueryReturn,
+} from '../query/reissue-access-jwt.query';
 
 @Injectable()
-@CommandHandler(ReissueAccessJwtCommand)
+@QueryHandler(ReissueAccessJwtQuery)
 export class ReissueAccessJwtHandler
   implements
-    ICommandHandler<ReissueAccessJwtCommand, ReissueAccessJwtCommandReturn>
+    ICommandHandler<ReissueAccessJwtQuery, ReissueAccessJwtQueryReturn>
 {
   constructor(
     private readonly configService: ConfigService,
@@ -21,9 +21,9 @@ export class ReissueAccessJwtHandler
   ) {}
 
   async execute(
-    command: ReissueAccessJwtCommand,
-  ): Promise<ReissueAccessJwtCommandReturn> {
-    const { refreshToken } = command.reissueAccessJwtCommandDTO;
+    query: ReissueAccessJwtQuery,
+  ): Promise<ReissueAccessJwtQueryReturn> {
+    const { refreshToken } = query.reissueAccessJwtQueryDTO;
 
     const verify = jwt.verify(
       refreshToken,

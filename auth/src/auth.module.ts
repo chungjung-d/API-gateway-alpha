@@ -6,7 +6,7 @@ import { UserRepository } from './infrastructure/repository/user.repository';
 import { UserFactory } from './domain/interface/user.class';
 import { ConfigModule } from '@nestjs/config';
 import { VerifyAccessJWTTokenHandler } from './application/query-handler/verify-access-jwt.handler';
-import { ReissueAccessJwtHandler } from './application/command-handler/reissue-access-jwt.handler';
+import { ReissueAccessJwtHandler } from './application/query-handler/reissue-access-jwt.handler';
 import { LoginLocalUserHandler } from './application/command-handler/login-local-user.handler';
 
 const application = [
