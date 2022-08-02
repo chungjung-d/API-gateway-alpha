@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UserClass, UserFactory } from '../../domain/interface/user.class';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { UserRepositoryInterface } from '../../domain/interface/repostory.interface';
 import { User } from '../entity/user.entity';
 
@@ -11,15 +11,21 @@ export class UserRepository implements UserRepositoryInterface {
     private readonly userFactory: UserFactory,
   ) {}
 
-  async createUser(new_user: UserClass): Promise<void> {
-    const userRepository = this.dataSource.getRepository(User);
+  async createUser(
+    new_user: UserClass,
+    transactionalEntityManager: EntityManager,
+  ): Promise<void> {
+    const userRepository = transactionalEntityManager.getRepository(User);
 
     const user_entity = this.classToEntity(new_user);
     await userRepository.save(user_entity);
   }
 
-  async updateUser(user: UserClass): Promise<void> {
-    const userRepository = this.dataSource.getRepository(User);
+  async updateUser(
+    user: UserClass,
+    transactionalEntityManager: EntityManager,
+  ): Promise<void> {
+    const userRepository = transactionalEntityManager.getRepository(User);
     const user_entity = this.classToEntity(user);
 
     await userRepository.update(
@@ -32,12 +38,15 @@ export class UserRepository implements UserRepositoryInterface {
     );
   }
 
-  findAll(): Promise<UserClass[]> {
+  findAll(transactionalEntityManager: EntityManager): Promise<UserClass[]> {
     return Promise.resolve([]);
   }
 
-  async findById(userEmailId: string): Promise<UserClass> {
-    const userRepository = this.dataSource.getRepository(User);
+  async findById(
+    userEmailId: string,
+    transactionalEntityManager: EntityManager,
+  ): Promise<UserClass> {
+    const userRepository = transactionalEntityManager.getRepository(User);
     const user = await userRepository.findOne({
       where: {
         userEmailId: userEmailId,
@@ -47,8 +56,11 @@ export class UserRepository implements UserRepositoryInterface {
     return user_class;
   }
 
-  async findByUUID(userUUID: string): Promise<UserClass | null> {
-    const userRepository = this.dataSource.getRepository(User);
+  async findByUUID(
+    userUUID: string,
+    transactionalEntityManager: EntityManager,
+  ): Promise<UserClass | null> {
+    const userRepository = transactionalEntityManager.getRepository(User);
     return Promise.resolve(undefined);
   }
 
