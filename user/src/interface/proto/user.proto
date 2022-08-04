@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+package user;
+
+service UserService {
+  rpc CreateUserInfo (CreateUserInfoData) returns (google.protobuf.Empty){}
+
+}
+
+message CreateUserInfoData {
+  string userUUID = 1;
+}

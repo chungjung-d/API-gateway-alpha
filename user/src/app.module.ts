@@ -1,9 +1,21 @@
 import { Module } from '@nestjs/common';
+import { DatabaseModule } from './infrastructure/database/database.module';
+import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user.module';
-import { UserController } from './interface/conrtroller/user.controller';
 
 @Module({
-  imports: [UserModule],
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath:
+        process.env.NODE_ENV === 'production'
+          ? '.production.env'
+          : process.env.NODE_ENV === 'stage'
+          ? '.stage.env'
+          : '.develop.env',
+    }),
+    UserModule,
+    DatabaseModule,
+  ],
   controllers: [],
   providers: [],
 })
