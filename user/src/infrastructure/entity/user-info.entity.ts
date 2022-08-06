@@ -1,8 +1,8 @@
-import { Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { UserInfoEntityType } from '../../domin/type/entity-type/user.entity-type';
+import { Entity, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { UserInfoEntityType } from '../../domin/type/entity-type/user-info.entity-type';
 
 @Entity('user_info_tb')
 export class UserInfo implements UserInfoEntityType {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn('uuid', { unique: true })
   userUUID: string;
 }

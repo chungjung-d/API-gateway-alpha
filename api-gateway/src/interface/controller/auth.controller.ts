@@ -2,23 +2,11 @@ import {
   Body,
   Controller,
   Get,
-  OnModuleInit,
   Post,
   Req,
-  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { grpcClientAuth } from '../../infrastructure/grpc/client/auth.client';
-import { Client, ClientGrpc } from '@nestjs/microservices';
-import { AuthService } from '../../infrastructure/grpc/interface/auth';
-import {
-  AccessJWTTokenDTO,
-  GrpcStatusDTO,
-  JWTTokenDTO,
-  ReissueAccessJWTTokenDTO,
-  UserInfoDTO,
-  VerifyAccessJWTTokenDTO,
-} from '../../infrastructure/grpc/DTO/auth/auth.dto';
+import { ReissueAccessJWTTokenDTO } from '../../infrastructure/grpc/DTO/auth/auth.dto';
 import { VerifyAccessJwtInterceptor } from '../../application/interceptor/verify-access-jwt.interceptor';
 import { AuthBusiness } from '../../application/business/auth.business';
 import {

@@ -1,4 +1,4 @@
-import { UserInfoEntityType } from '../type/entity-type/user.entity-type';
+import { UserInfoEntityType } from '../type/entity-type/user-info.entity-type';
 import { AggregateRoot, EventPublisher } from '@nestjs/cqrs';
 import { Inject, Injectable } from '@nestjs/common';
 

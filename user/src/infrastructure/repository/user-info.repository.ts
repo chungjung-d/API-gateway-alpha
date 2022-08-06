@@ -5,6 +5,7 @@ import {
   UserInfoClass,
   UserInfoFactory,
 } from '../../domin/interface/user-info.class';
+import { UserInfo } from '../entity/user-info.entity';
 
 @Injectable()
 export class UserInfoRepository implements UserInfoRepositoryInterface {
@@ -13,11 +14,14 @@ export class UserInfoRepository implements UserInfoRepositoryInterface {
     private readonly userInfoFactory: UserInfoFactory,
   ) {}
 
-  createUserInfo(
+  async createUserInfo(
     new_user_info: UserInfoClass,
     transactionalEntityManager: EntityManager,
   ): Promise<void> {
-    return Promise.resolve(undefined);
+    const userInfoRepository =
+      transactionalEntityManager.getRepository(UserInfo);
+    const user_info_entity = this.classToEntity(new_user_info);
+    await userInfoRepository.save(user_info_entity);
   }
 
   findAll(transactionalEntityManager: EntityManager): Promise<UserInfoClass[]> {
@@ -36,5 +40,16 @@ export class UserInfoRepository implements UserInfoRepositoryInterface {
     transactionalEntityManager: EntityManager,
   ): Promise<void> {
     return Promise.resolve(undefined);
+  }
+
+  private classToEntity(_class: UserInfoClass): UserInfo {
+    const properties = _class.properties();
+    return {
+      ...properties,
+    };
+  }
+
+  private entityToClass(entity: UserInfo): UserInfoClass {
+    return this.userInfoFactory.reconstitute(entity);
   }
 }
