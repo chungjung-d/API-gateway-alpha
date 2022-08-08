@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import {
   AccessJWTTokenDTO,
+  DeleteUserDTO,
   JWTTokenDTO,
   LocalLoginDTO,
   LocalRegisterDTO,
@@ -18,4 +19,5 @@ export interface AuthService {
   ReissueAccessJWTToken(
     request: ReissueAccessJWTTokenDTO,
   ): Observable<AccessJWTTokenDTO>;
+  DeleteUser(request: DeleteUserDTO): Observable<void>;
 }

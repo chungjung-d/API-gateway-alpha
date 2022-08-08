@@ -1,12 +1,16 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Req,
   UseInterceptors,
 } from '@nestjs/common';
-import { ReissueAccessJWTTokenDTO } from '../../infrastructure/grpc/DTO/auth/auth.dto';
+import {
+  DeleteUserDTO,
+  ReissueAccessJWTTokenDTO,
+} from '../../infrastructure/grpc/DTO/auth/auth.dto';
 import { VerifyAccessJwtInterceptor } from '../../application/interceptor/verify-access-jwt.interceptor';
 import { AuthBusiness } from '../../application/business/auth.business';
 import {
@@ -48,5 +52,11 @@ export class AuthController {
     return await this.authBusiness.reissueAccessJWTToken(
       reissueAccessJWTTokenDTO,
     );
+  }
+
+  @UseInterceptors(VerifyAccessJwtInterceptor)
+  @Delete('')
+  async deleteUser(@Req() req): Promise<void> {
+    await this.authBusiness.deleteUser({ userUUID: req.user.userUUID });
   }
 }

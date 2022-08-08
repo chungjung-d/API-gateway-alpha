@@ -4,6 +4,7 @@ import { AuthService } from '../../infrastructure/grpc/interface/auth';
 import { grpcClientAuth } from '../../infrastructure/grpc/client/auth.client';
 import {
   AccessJWTTokenDTO,
+  DeleteUserDTO,
   JWTTokenDTO,
   LocalLoginDTO,
   LocalRegisterDTO,
@@ -61,5 +62,9 @@ export class AuthBusiness implements OnModuleInit {
 
     const { ...accessJWTTokenHttpDTO } = response;
     return accessJWTTokenHttpDTO;
+  }
+
+  async deleteUser(deleteUserDTO: DeleteUserDTO): Promise<void> {
+    await this.authService.DeleteUser(deleteUserDTO).toPromise();
   }
 }

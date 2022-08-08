@@ -2,6 +2,7 @@ import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import {
   AccessJWTTokenDTO,
+  DeleteUserDTO,
   JWTTokenDTO,
   LocalLoginDTO,
   LocalRegisterDTO,
@@ -16,10 +17,15 @@ import { JWTTokenDataType } from '../../domain/type/message-type/auth.command.me
 import { AuthGrpcInterface } from '../../domain/interface/auth.grpc.controller.interface';
 import { VerifyAccessJWTTokenQuery } from '../../application/query/verify-access-jwt.query';
 import { ReissueAccessJwtQuery } from '../../application/query/reissue-access-jwt.query';
+import { CreateTransactionQueue } from '../../application/queue/create-transaction.queue';
 
 @Controller()
 export class AuthController implements AuthGrpcInterface {
-  constructor(private commandBus: CommandBus, private queryBus: QueryBus) {}
+  constructor(
+    private commandBus: CommandBus,
+    private queryBus: QueryBus,
+    private createTransactionQueue: CreateTransactionQueue,
+  ) {}
 
   @GrpcMethod('AuthService', 'LocalRegister')
   async localRegister(request: LocalRegisterDTO): Promise<void> {
@@ -76,5 +82,10 @@ export class AuthController implements AuthGrpcInterface {
     const accessJWTToken = await this.queryBus.execute(reissueAccessJwtQuery);
 
     return accessJWTToken;
+  }
+
+  @GrpcMethod('AuthService', 'DeleteUser')
+  async deleteUser(request: DeleteUserDTO): Promise<void> {
+    await this.createTransactionQueue.deleteUser(request);
   }
 }

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
-import { ConfigModule } from '@nestjs/config';
-import { BullmqModule } from './infrastructure/bullmq/bullmq.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -14,11 +14,12 @@ import { BullmqModule } from './infrastructure/bullmq/bullmq.module';
           ? '.stage.env'
           : '.develop.env',
     }),
+
     AuthModule,
     DatabaseModule,
-    BullmqModule,
   ],
   controllers: [],
   providers: [],
+  exports: [],
 })
 export class AppModule {}

@@ -5,6 +5,7 @@ import {
   LocalLoginDataType,
 } from '../../../../domain/type/auth/message-type/auth.command.message-type';
 import { IsEmail, IsEnum, IsNumber, IsString, IsUUID } from 'class-validator';
+import { UserEntityType } from '../../../../domain/type/auth/entity-type/user.entity-type';
 
 export class LocalLoginDTO implements LocalLoginDataType {
   @IsString()
@@ -34,6 +35,11 @@ export class ReissueAccessJWTTokenDTO
 {
   @IsString()
   refreshToken: string;
+}
+
+export class DeleteUserDTO implements Pick<UserEntityType, 'userUUID'> {
+  @IsUUID()
+  userUUID: string;
 }
 
 export class JWTTokenDTO implements JWTTokenDataType {

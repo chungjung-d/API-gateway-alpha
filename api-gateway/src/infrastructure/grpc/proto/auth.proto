@@ -9,6 +9,7 @@ service AuthService {
   rpc LocalRegister(LocalRegisterData) returns (google.protobuf.Empty){}
   rpc VerifyAccessJWTToken(VerifyAccessJWTTokenData) returns (UserInfo){}
   rpc ReissueAccessJWTToken(ReissueAccessJWTTokenData) returns (AccessToken){}
+  rpc DeleteUser(DeleteUserData) returns (google.protobuf.Empty){}
 }
 
 message LocalRegisterData {
@@ -28,6 +29,11 @@ message VerifyAccessJWTTokenData {
 message ReissueAccessJWTTokenData {
   string refreshToken = 1;
 }
+
+message DeleteUserData {
+  string userUUID = 1;
+}
+
 
 message JWTToken {
   string accessToken = 2;

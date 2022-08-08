@@ -1,5 +1,6 @@
 import {
   AccessJWTTokenDTO,
+  DeleteUserDTO,
   JWTTokenDTO,
   LocalLoginDTO,
   LocalRegisterDTO,
@@ -15,4 +16,5 @@ export interface AuthGrpcInterface {
   reissueAccessJWTToken(
     request: ReissueAccessJWTTokenDTO,
   ): Promise<AccessJWTTokenDTO>;
+  deleteUser(request: DeleteUserDTO): Promise<void>;
 }

@@ -6,10 +6,7 @@ import { User } from '../entity/user.entity';
 
 @Injectable()
 export class UserRepository implements UserRepositoryInterface {
-  constructor(
-    private dataSource: DataSource,
-    private readonly userFactory: UserFactory,
-  ) {}
+  constructor(private readonly userFactory: UserFactory) {}
 
   async createUser(
     new_user: UserClass,
