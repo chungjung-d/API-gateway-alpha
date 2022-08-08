@@ -2,7 +2,6 @@ import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import {
   AccessJWTTokenDTO,
-  GrpcStatusDTO,
   JWTTokenDTO,
   LocalLoginDTO,
   LocalRegisterDTO,
@@ -10,7 +9,6 @@ import {
   UserInfoDTO,
   VerifyAccessJWTTokenDTO,
 } from '../DTO/auth.dto';
-import { grpcStatus } from '../../domain/type/message-type/response.message-type';
 import { CreateLocalUserCommand } from '../../application/command/create-local-user.command';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { LoginLocalUserCommand } from '../../application/command/login-local-user.command';
@@ -24,7 +22,7 @@ export class AuthController implements AuthGrpcInterface {
   constructor(private commandBus: CommandBus, private queryBus: QueryBus) {}
 
   @GrpcMethod('AuthService', 'LocalRegister')
-  async localRegister(request: LocalRegisterDTO): Promise<GrpcStatusDTO> {
+  async localRegister(request: LocalRegisterDTO): Promise<void> {
     const createLocalUserCommandDTO = {
       userEmailId: request.userEmailId,
       userPassword: request.userPassword,
@@ -33,10 +31,6 @@ export class AuthController implements AuthGrpcInterface {
       createLocalUserCommandDTO,
     );
     await this.commandBus.execute(command);
-
-    return {
-      grpcStatus: grpcStatus.OK,
-    };
   }
 
   @GrpcMethod('AuthService', 'LocalLogin')
@@ -52,10 +46,7 @@ export class AuthController implements AuthGrpcInterface {
 
     const jwtToken: JWTTokenDataType = await this.commandBus.execute(command);
 
-    return {
-      ...jwtToken,
-      grpcStatus: grpcStatus.OK,
-    };
+    return jwtToken;
   }
 
   @GrpcMethod('AuthService', 'VerifyAccessJWTToken')
@@ -70,10 +61,7 @@ export class AuthController implements AuthGrpcInterface {
       new VerifyAccessJWTTokenQuery(verifyAccessJWTTokenQueryDTO);
     const response = await this.queryBus.execute(verifyAccessJWTTokenQuery);
 
-    return {
-      ...response,
-      grpcStatus: grpcStatus.OK,
-    };
+    return response;
   }
 
   @GrpcMethod('AuthService', 'ReissueAccessJWTToken')
@@ -87,6 +75,6 @@ export class AuthController implements AuthGrpcInterface {
 
     const accessJWTToken = await this.queryBus.execute(reissueAccessJwtQuery);
 
-    return { ...accessJWTToken, grpcStatus: grpcStatus.OK };
+    return accessJWTToken;
   }
 }

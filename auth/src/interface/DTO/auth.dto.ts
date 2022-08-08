@@ -1,13 +1,8 @@
-import { IsEmail, IsEnum, IsNumber, IsString, IsUUID } from 'class-validator';
+import { IsEmail, IsNumber, IsString, IsUUID } from 'class-validator';
 import {
   JWTTokenDataType,
   LocalLoginDataType,
 } from '../../domain/type/message-type/auth.command.message-type';
-import {
-  grpcStatus,
-  GrpcStatusData,
-  GrpcStatusType,
-} from '../../domain/type/message-type/response.message-type';
 import { UserInformationDataType } from '../../domain/type/message-type/auth.query.message-type';
 
 export class LocalLoginDTO implements LocalLoginDataType {
@@ -40,15 +35,7 @@ export class ReissueAccessJWTTokenDTO
   refreshToken: string;
 }
 
-export class GrpcStatusDTO implements GrpcStatusData {
-  @IsEnum(grpcStatus)
-  grpcStatus: GrpcStatusType;
-}
-
-export class JWTTokenDTO implements JWTTokenDataType, GrpcStatusData {
-  @IsEnum(grpcStatus)
-  grpcStatus: GrpcStatusType;
-
+export class JWTTokenDTO implements JWTTokenDataType {
   @IsString()
   accessToken: string;
 
@@ -56,7 +43,7 @@ export class JWTTokenDTO implements JWTTokenDataType, GrpcStatusData {
   refreshToken: string;
 }
 
-export class UserInfoDTO implements UserInformationDataType, GrpcStatusData {
+export class UserInfoDTO implements UserInformationDataType {
   @IsEmail()
   userEmailId: string;
 
@@ -65,17 +52,11 @@ export class UserInfoDTO implements UserInformationDataType, GrpcStatusData {
 
   @IsNumber()
   accessLevel: number;
-
-  @IsEnum(grpcStatus)
-  grpcStatus: GrpcStatusType;
 }
 
 export class AccessJWTTokenDTO
-  implements Pick<JWTTokenDataType, 'accessToken'>, GrpcStatusData
+  implements Pick<JWTTokenDataType, 'accessToken'>
 {
   @IsString()
   accessToken: string;
-
-  @IsEnum(grpcStatus)
-  grpcStatus: GrpcStatusType;
 }

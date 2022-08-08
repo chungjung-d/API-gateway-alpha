@@ -4,7 +4,6 @@ import { AuthService } from '../../infrastructure/grpc/interface/auth';
 import { grpcClientAuth } from '../../infrastructure/grpc/client/auth.client';
 import {
   AccessJWTTokenDTO,
-  GrpcStatusDTO,
   JWTTokenDTO,
   LocalLoginDTO,
   LocalRegisterDTO,
@@ -34,14 +33,12 @@ export class AuthBusiness implements OnModuleInit {
     const response: JWTTokenDTO = await this.authService
       .LocalLogin(localLoginDTO)
       .toPromise();
-    const { grpcStatus, ...jwtTokenHttpDTO } = response;
+    const { ...jwtTokenHttpDTO } = response;
     return jwtTokenHttpDTO;
   }
 
   async localRegister(localRegisterDTO: LocalRegisterDTO): Promise<void> {
-    const response: GrpcStatusDTO = await this.authService
-      .LocalRegister(localRegisterDTO)
-      .toPromise();
+    await this.authService.LocalRegister(localRegisterDTO).toPromise();
     //TODO 에러처리
   }
 
@@ -51,7 +48,7 @@ export class AuthBusiness implements OnModuleInit {
     const response: UserInfoDTO = await this.authService
       .VerifyAccessJWTToken(verifyAccessJWTTokenDTO)
       .toPromise();
-    const { grpcStatus, ...userInfoHttpDto } = response;
+    const { ...userInfoHttpDto } = response;
     return userInfoHttpDto;
   }
 
@@ -62,7 +59,7 @@ export class AuthBusiness implements OnModuleInit {
       .ReissueAccessJWTToken(reissueAccessJWTTokenDTO)
       .toPromise();
 
-    const { grpcStatus, ...accessJWTTokenHttpDTO } = response;
+    const { ...accessJWTTokenHttpDTO } = response;
     return accessJWTTokenHttpDTO;
   }
 }

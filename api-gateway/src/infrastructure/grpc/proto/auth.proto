@@ -1,10 +1,12 @@
 syntax = "proto3";
 
+import "google/protobuf/empty.proto";
+
 package auth;
 
 service AuthService {
   rpc LocalLogin (LocalLoginData) returns (JWTToken){}
-  rpc LocalRegister(LocalRegisterData) returns (GrpcStatus){}
+  rpc LocalRegister(LocalRegisterData) returns (google.protobuf.Empty){}
   rpc VerifyAccessJWTToken(VerifyAccessJWTTokenData) returns (UserInfo){}
   rpc ReissueAccessJWTToken(ReissueAccessJWTTokenData) returns (AccessToken){}
 }
@@ -28,23 +30,16 @@ message ReissueAccessJWTTokenData {
 }
 
 message JWTToken {
-  int32 grpcStatus = 1;
   string accessToken = 2;
   string refreshToken = 3;
-}
-
-message GrpcStatus {
-  int32 grpcStatus = 1;
 }
 
 message UserInfo {
   string userEmailId = 1;
   string userUUID = 2;
   int32 accessLevel = 3;
-  int32 grpcStatus = 4;
 }
 
 message AccessToken {
   string accessToken = 1;
-  int32 grpcStatus = 2;
 }

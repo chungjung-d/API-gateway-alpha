@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs';
 import {
   AccessJWTTokenDTO,
-  GrpcStatusDTO,
   JWTTokenDTO,
   LocalLoginDTO,
   LocalRegisterDTO,
@@ -12,7 +11,7 @@ import {
 
 export interface AuthService {
   LocalLogin(request: LocalLoginDTO): Observable<JWTTokenDTO>;
-  LocalRegister(request: LocalRegisterDTO): Observable<GrpcStatusDTO>;
+  LocalRegister(request: LocalRegisterDTO): Observable<void>;
   VerifyAccessJWTToken(
     request: VerifyAccessJWTTokenDTO,
   ): Observable<UserInfoDTO>;

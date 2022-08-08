@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { ConfigModule } from '@nestjs/config';
+import { BullmqModule } from './infrastructure/bullmq/bullmq.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     AuthModule,
     DatabaseModule,
+    BullmqModule,
   ],
   controllers: [],
   providers: [],

@@ -1,6 +1,5 @@
 import {
   AccessJWTTokenDTO,
-  GrpcStatusDTO,
   JWTTokenDTO,
   LocalLoginDTO,
   LocalRegisterDTO,
@@ -11,7 +10,7 @@ import {
 
 export interface AuthGrpcInterface {
   localLogin(request: LocalLoginDTO): Promise<JWTTokenDTO>;
-  localRegister(request: LocalRegisterDTO): Promise<GrpcStatusDTO>;
+  localRegister(request: LocalRegisterDTO): Promise<void>;
   verifyAccessJWTToken(request: VerifyAccessJWTTokenDTO): Promise<UserInfoDTO>;
   reissueAccessJWTToken(
     request: ReissueAccessJWTTokenDTO,
