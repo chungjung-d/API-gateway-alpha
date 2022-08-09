@@ -5,13 +5,31 @@ import { UserInfoRepository } from './infrastructure/repository/user-info.reposi
 import { CqrsModule } from '@nestjs/cqrs';
 import { ConfigModule } from '@nestjs/config';
 import { CreateUserInfoHandler } from './application/command-handler/create-user-info.handler';
+import { BullModule } from '@nestjs/bull';
+import { deleteUserTransactionToSagaBullConfig } from './infrastructure/bullmq/config/delete-user/delete-user-transaction-to-saga.bull.config';
+import { deleteUserTransactionToUserBullConfig } from './infrastructure/bullmq/config/delete-user/delete-user-transaction-to-user.bull.config';
+import { CreateTransactionBullConfig } from './infrastructure/bullmq/config/create-transaction.bull.config';
+import { DeleteUserConsumer } from './interface/consumer/delete-user.consumer';
 
+const deleteUserTransaction = [
+  deleteUserTransactionToUserBullConfig,
+  deleteUserTransactionToSagaBullConfig,
+];
+
+const consumer = [DeleteUserConsumer];
 const application = [CreateUserInfoHandler];
 const factory = [UserInfoFactory];
 const repository = [UserInfoRepository];
 
 @Module({
-  imports: [CqrsModule, ConfigModule],
+  imports: [
+    BullModule.registerQueueAsync(
+      CreateTransactionBullConfig,
+      ...deleteUserTransaction,
+    ),
+    CqrsModule,
+    ConfigModule,
+  ],
   controllers: [UserController],
   providers: [...factory, ...repository, ...application],
 })

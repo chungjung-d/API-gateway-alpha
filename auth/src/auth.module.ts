@@ -10,7 +10,15 @@ import { ReissueAccessJwtHandler } from './application/query-handler/reissue-acc
 import { LoginLocalUserHandler } from './application/command-handler/login-local-user.handler';
 import { CreateTransactionQueue } from './application/queue/create-transaction.queue';
 import { BullModule } from '@nestjs/bull';
-import { BullConfig } from './infrastructure/bullmq/create-transaction.bull.config';
+import { CreateTransactionBullConfig } from './infrastructure/bullmq/config/create-transaction.bull.config';
+import { deleteUserTransactionToAuthBullConfig } from './infrastructure/bullmq/config/delete-user/delete-user-transaction-to-auth.bull.config';
+import { deleteUserTransactionToSagaBullConfig } from './infrastructure/bullmq/config/delete-user/delete-user-transaction-to-saga.bull.config';
+import { DeleteUserConsumer } from './interface/consumer/delete-user.consumer';
+
+const deleteUserTransaction = [
+  deleteUserTransactionToAuthBullConfig,
+  deleteUserTransactionToSagaBullConfig,
+];
 
 const application = [
   CreateLocalUserHandler,
@@ -19,14 +27,23 @@ const application = [
   ReissueAccessJwtHandler,
 ];
 
+const consumer = [DeleteUserConsumer];
+
 const queue = [CreateTransactionQueue];
 
 const factory = [UserFactory];
 const repository = [UserRepository];
 
 @Module({
-  imports: [BullModule.registerQueue(BullConfig), CqrsModule, ConfigModule],
+  imports: [
+    BullModule.registerQueue(
+      CreateTransactionBullConfig,
+      ...deleteUserTransaction,
+    ),
+    CqrsModule,
+    ConfigModule,
+  ],
   controllers: [AuthController],
-  providers: [...application, ...factory, ...repository, ...queue],
+  providers: [...application, ...factory, ...repository, ...queue, ...consumer],
 })
 export class AuthModule {}

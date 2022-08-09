@@ -1,10 +1,8 @@
-import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CreateTransactionQueue } from '../../application/queue/create-transaction.queue';
+import { MessageQueueType } from '../../../domain/type/mq-type/message-queue.name.type';
 
-export const BullConfig = {
-  name: 'create-transaction',
+export const CreateTransactionBullConfig = {
+  name: MessageQueueType.CREATE_TRANSACTION,
   imports: [ConfigModule],
   useFactory: async (configService: ConfigService) => ({
     redis: {

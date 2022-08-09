@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AuthModule } from './auth.module';
 import { DatabaseModule } from './infrastructure/database/database.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
