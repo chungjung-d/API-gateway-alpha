@@ -1,7 +1,7 @@
 import { IQuery } from '@nestjs/cqrs';
 import { JWTTokenDataType } from '../../domain/type/message-type/auth.command.message-type';
 
-export interface ReissueAccessJwtQueryInterface
+export interface ReissueAccessJwtQueryDataType
   extends Pick<JWTTokenDataType, 'refreshToken'> {}
 
 export interface ReissueAccessJwtQueryReturn
@@ -9,6 +9,6 @@ export interface ReissueAccessJwtQueryReturn
 
 export class ReissueAccessJwtQuery implements IQuery {
   constructor(
-    readonly reissueAccessJwtQueryDTO: ReissueAccessJwtQueryInterface,
+    readonly reissueAccessJwtQueryDTO: ReissueAccessJwtQueryDataType,
   ) {}
 }

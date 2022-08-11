@@ -6,17 +6,25 @@ export interface UserRepositoryInterface {
     new_user: UserClass,
     transactionalEntityManager: EntityManager,
   ) => Promise<void>;
+
   updateUser: (
     user: UserClass,
     transactionalEntityManager: EntityManager,
   ) => Promise<void>;
+
   findByUUID: (
     userUUID: string,
     transactionalEntityManager: EntityManager,
   ) => Promise<UserClass | null>;
+
   findById: (
     userEmailId: string,
     transactionalEntityManager: EntityManager,
   ) => Promise<UserClass>;
   findAll: (transactionalEntityManager: EntityManager) => Promise<UserClass[]>;
+
+  deleteUser: (
+    userUUID: string,
+    transactionalEntityManager: EntityManager,
+  ) => Promise<void>;
 }

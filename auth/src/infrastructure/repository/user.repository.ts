@@ -61,6 +61,14 @@ export class UserRepository implements UserRepositoryInterface {
     return Promise.resolve(undefined);
   }
 
+  async deleteUser(
+    userUUID: string,
+    transactionalEntityManager: EntityManager,
+  ): Promise<void> {
+    const userRepository = transactionalEntityManager.getRepository(User);
+    await userRepository.delete({ userUUID: userUUID });
+  }
+
   private classToEntity(_class: UserClass): User {
     const properties = _class.properties();
     return {

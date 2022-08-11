@@ -3,7 +3,7 @@ import { CreateLocalUserCommand } from '../command/create-local-user.command';
 import { Inject, Injectable } from '@nestjs/common';
 import { UserRepository } from '../../infrastructure/repository/user.repository';
 import * as bcrypt from 'bcryptjs';
-import { UserClass, UserFactory } from '../../domain/interface/user.class';
+import { UserFactory } from '../../domain/interface/user.class';
 import { DataSource, EntityManager } from 'typeorm';
 
 @Injectable()
