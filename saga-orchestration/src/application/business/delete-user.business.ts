@@ -7,8 +7,11 @@ import {
   DeleteUserTransactionToUserType,
 } from '../../domain/type/mq-type/message-queue.message.type';
 import { UserEntityType } from '../../domain/type/auth/entity-type/user.entity-type';
+import { TransactionIdType } from '../../domain/type/mq-type/message-queue.common';
 
-export interface DeleteUserType extends Pick<UserEntityType, 'userUUID'> {}
+export interface DeleteUserType
+  extends Pick<UserEntityType, 'userUUID'>,
+    TransactionIdType {}
 
 @Injectable()
 export class DeleteUserBusiness {
@@ -20,40 +23,34 @@ export class DeleteUserBusiness {
     private deleteUserTransactionToUserQueue: Queue,
   ) {}
 
-  async authTransactionCommit(job: Job<DeleteUserType>): Promise<void> {
-    const deleteUserDTO: DeleteUserType = job.data;
-
-    console.log(job.data);
+  async authTransactionCommit(jobData: DeleteUserType): Promise<void> {
     await this.deleteUserTransactionToAuthQueue.add(
       DeleteUserTransactionToAuthType.COMMIT,
-      deleteUserDTO,
+      jobData,
     );
   }
 
-  async userTransactionCommit(job: Job<DeleteUserType>): Promise<void> {
-    const deleteUserDTO: DeleteUserType = job.data;
+  async userTransactionCommit(jobData: DeleteUserType): Promise<void> {
+    await console.log('SAGA : START USER TRANSACTION ');
 
     await this.deleteUserTransactionToUserQueue.add(
       DeleteUserTransactionToUserType.COMMIT,
-      deleteUserDTO,
+      jobData,
     );
   }
 
-  async authTransactionRollback(job: Job<DeleteUserType>): Promise<void> {
-    const deleteUserDTO: DeleteUserType = job.data;
-
+  async authTransactionRollback(jobData: DeleteUserType): Promise<void> {
+    await console.log('rollback auth');
     await this.deleteUserTransactionToAuthQueue.add(
       DeleteUserTransactionToAuthType.ROLLBACK,
-      deleteUserDTO,
+      jobData,
     );
   }
 
-  async userTransactionRollback(job: Job<DeleteUserType>): Promise<void> {
-    const deleteUserDTO: DeleteUserType = job.data;
-
+  async userTransactionRollback(jobData: DeleteUserType): Promise<void> {
     await this.deleteUserTransactionToUserQueue.add(
       DeleteUserTransactionToUserType.ROLLBACK,
-      deleteUserDTO,
+      jobData,
     );
   }
 }

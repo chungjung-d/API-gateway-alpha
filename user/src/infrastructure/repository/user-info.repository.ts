@@ -42,6 +42,15 @@ export class UserInfoRepository implements UserInfoRepositoryInterface {
     return Promise.resolve(undefined);
   }
 
+  async deleteUserInfo(
+    userUUID: string,
+    transactionalEntityManager: EntityManager,
+  ): Promise<void> {
+    const userInfoRepository =
+      transactionalEntityManager.getRepository(UserInfo);
+    await userInfoRepository.delete({ userUUID: userUUID });
+  }
+
   private classToEntity(_class: UserInfoClass): UserInfo {
     const properties = _class.properties();
     return {

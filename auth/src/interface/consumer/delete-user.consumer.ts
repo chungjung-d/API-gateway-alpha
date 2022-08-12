@@ -7,10 +7,13 @@ import {
 } from '../../domain/type/mq-type/message-queue.message.type';
 import { Job, Queue } from 'bull';
 import {
-  DeleteUserCommand,
-  DeleteUserCommandDataType,
-} from '../../application/command/delete-user.command';
-import { MessageQueueState } from '../../domain/type/mq-type/message-queue.state.type';
+  DeleteUserCommitCommand,
+  DeleteUserCommitCommandDataType,
+} from '../../application/command/delete-user-commit.command';
+import {
+  DeleteUserRollbackCommand,
+  DeleteUserRollbackCommandDataType,
+} from '../../application/command/delete-user-rollback.command';
 
 @Processor(MessageQueueType.DELETE_USER_TRANSACTION_TO_AUTH)
 export class DeleteUserConsumer {
@@ -23,15 +26,14 @@ export class DeleteUserConsumer {
 
   @Process(DeleteUserTransactionToAuthType.COMMIT)
   async deleteUserCommit(
-    job: Job<Omit<DeleteUserCommandDataType, 'messageQueueState'>>,
+    job: Job<DeleteUserCommitCommandDataType>,
   ): Promise<void> {
-    const deleteUserCommandDTO: DeleteUserCommandDataType = {
+    const deleteUserCommitCommandDTO: DeleteUserCommitCommandDataType = {
       ...job.data,
-      messageQueueState: MessageQueueState.COMMIT,
     };
 
-    const command: DeleteUserCommand = await new DeleteUserCommand(
-      deleteUserCommandDTO,
+    const command: DeleteUserCommitCommand = await new DeleteUserCommitCommand(
+      deleteUserCommitCommandDTO,
     );
 
     try {
@@ -41,10 +43,32 @@ export class DeleteUserConsumer {
         DeleteUserTransactionToSagaType.AUTH_FAILED,
         job.data,
       );
+
+      throw new Error('Transaction Commit Error');
     }
+
+    await console.log('Auth : transaction commit success');
+    await console.log(job.data);
+
     await this.deleteUserTransactionToSagaQueue.add(
       DeleteUserTransactionToSagaType.AUTH_SUCCESS,
       job.data,
     );
+  }
+
+  @Process(DeleteUserTransactionToAuthType.ROLLBACK)
+  async deleteUserRollback(
+    job: Job<DeleteUserCommitCommandDataType>,
+  ): Promise<void> {
+    await console.log('Auth : transaction Rollback start');
+    await console.log(job.data);
+
+    const deleteUserRollbackCommandDTO: DeleteUserCommitCommandDataType = {
+      ...job.data,
+    };
+    const command: DeleteUserRollbackCommand =
+      await new DeleteUserRollbackCommand(deleteUserRollbackCommandDTO);
+
+    await this.commandBus.execute(command);
   }
 }

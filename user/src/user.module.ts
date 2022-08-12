@@ -10,6 +10,7 @@ import { deleteUserTransactionToSagaBullConfig } from './infrastructure/bullmq/c
 import { deleteUserTransactionToUserBullConfig } from './infrastructure/bullmq/config/delete-user/delete-user-transaction-to-user.bull.config';
 import { CreateTransactionBullConfig } from './infrastructure/bullmq/config/create-transaction.bull.config';
 import { DeleteUserConsumer } from './interface/consumer/delete-user.consumer';
+import { DeleteUserCommitHandler } from './application/command-handler/delete-user-commit.handler';
 
 const deleteUserTransaction = [
   deleteUserTransactionToUserBullConfig,
@@ -17,7 +18,7 @@ const deleteUserTransaction = [
 ];
 
 const consumer = [DeleteUserConsumer];
-const application = [CreateUserInfoHandler];
+const application = [CreateUserInfoHandler, DeleteUserCommitHandler];
 const factory = [UserInfoFactory];
 const repository = [UserInfoRepository];
 
@@ -31,6 +32,6 @@ const repository = [UserInfoRepository];
     ConfigModule,
   ],
   controllers: [UserController],
-  providers: [...factory, ...repository, ...application],
+  providers: [...factory, ...repository, ...application, ...consumer],
 })
 export class UserModule {}

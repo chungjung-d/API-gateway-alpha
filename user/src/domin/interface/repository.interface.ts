@@ -10,6 +10,12 @@ export interface UserInfoRepositoryInterface {
     new_user_info: UserInfoClass,
     transactionalEntityManager: EntityManager,
   ) => Promise<void>;
+
+  deleteUserInfo: (
+    userUUID: string,
+    transactionalEntityManager: EntityManager,
+  ) => Promise<void>;
+
   findByUUID: (
     userUUID: string,
     transactionalEntityManager: EntityManager,

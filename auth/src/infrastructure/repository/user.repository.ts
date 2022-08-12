@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UserClass, UserFactory } from '../../domain/interface/user.class';
-import { DataSource, EntityManager, Repository } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { UserRepositoryInterface } from '../../domain/interface/repostory.interface';
 import { User } from '../entity/user.entity';
 
@@ -58,7 +58,13 @@ export class UserRepository implements UserRepositoryInterface {
     transactionalEntityManager: EntityManager,
   ): Promise<UserClass | null> {
     const userRepository = transactionalEntityManager.getRepository(User);
-    return Promise.resolve(undefined);
+    const user = await userRepository.findOne({
+      where: {
+        userUUID: userUUID,
+      },
+    });
+    const user_class = await this.entityToClass(user);
+    return user_class;
   }
 
   async deleteUser(

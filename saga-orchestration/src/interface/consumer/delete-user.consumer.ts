@@ -16,24 +16,31 @@ export class DeleteUserConsumer {
 
   @Process(DeleteUserTransactionToSagaType.AUTH_SUCCESS)
   async authTransactionSuccess(job: Job<DeleteUserType>): Promise<void> {
-    await this.deleteUserBusiness.userTransactionCommit(job);
+    console.log('SAGA : Auth Transaction Success');
+    console.log(job.data);
+
+    const jobData = job.data;
+    await this.deleteUserBusiness.userTransactionCommit(jobData);
   }
 
   @Process(DeleteUserTransactionToSagaType.AUTH_FAILED)
   async authTransactionFailed(job: Job<DeleteUserType>): Promise<void> {
-    console.log(job);
+    const jobData = job.data;
     console.log('ERROR');
   }
 
   @Process(DeleteUserTransactionToSagaType.USER_SUCCESS)
   async userTransactionSuccess(job: Job<DeleteUserType>): Promise<void> {
-    console.log(job);
+    const jobData = job.data;
     console.log('SUCCESS');
   }
 
   @Process(DeleteUserTransactionToSagaType.USER_FAILED)
   async userTransactionFailed(job: Job<DeleteUserType>): Promise<void> {
-    console.log(job);
-    await this.deleteUserBusiness.authTransactionRollback(job);
+    console.log('SAGA : User Transaction Failed');
+    await console.log(job.data);
+
+    const jobData = job.data;
+    await this.deleteUserBusiness.authTransactionRollback(jobData);
   }
 }

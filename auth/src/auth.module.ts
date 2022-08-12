@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, Module } from '@nestjs/common';
 import { AuthController } from './interface/controller/auth.controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CreateLocalUserHandler } from './application/command-handler/create-local-user.handler';
@@ -14,6 +14,8 @@ import { CreateTransactionBullConfig } from './infrastructure/bullmq/config/crea
 import { deleteUserTransactionToAuthBullConfig } from './infrastructure/bullmq/config/delete-user/delete-user-transaction-to-auth.bull.config';
 import { deleteUserTransactionToSagaBullConfig } from './infrastructure/bullmq/config/delete-user/delete-user-transaction-to-saga.bull.config';
 import { DeleteUserConsumer } from './interface/consumer/delete-user.consumer';
+import { DeleteUserCommitHandler } from './application/command-handler/delete-user-commit.handler';
+import { DeleteUserRollbackHandler } from './application/command-handler/delete-user-rollback.handler';
 
 const deleteUserTransaction = [
   deleteUserTransactionToAuthBullConfig,
@@ -25,6 +27,8 @@ const application = [
   LoginLocalUserHandler,
   VerifyAccessJWTTokenHandler,
   ReissueAccessJwtHandler,
+  DeleteUserCommitHandler,
+  DeleteUserRollbackHandler,
 ];
 
 const consumer = [DeleteUserConsumer];
@@ -36,6 +40,7 @@ const repository = [UserRepository];
 
 @Module({
   imports: [
+    CacheModule.register(),
     BullModule.registerQueue(
       CreateTransactionBullConfig,
       ...deleteUserTransaction,
